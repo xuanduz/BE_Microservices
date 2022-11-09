@@ -15,7 +15,7 @@ export class TokenService {
     @InjectRepository(TokenEntity) private tokenRepository: Repository<TokenEntity>,
   ) {}
 
-  public createToken(userId: string): Promise<IToken> {
+  public async createToken(userId: string): Promise<IToken> {
     const token = this.jwtService.sign(
       {
         userId,
@@ -24,30 +24,26 @@ export class TokenService {
         expiresIn: 30 * 24 * 60 * 60,
       },
     );
-    this.tokenRepository.save({
+    const newTokenUser = {
       user_id: userId,
       token
-    })
-    return this.tokenRepository.create({
-      user_id: userId,
-      token
-    }) as Promise
-    // return new this.tokenModel({
-    //   user_id: userId,
-    //   token,
-    // }).save();
+    }
+    this.tokenRepository.save(newTokenUser)
+    return this.tokenRepository.create(newTokenUser)
   }
 
-  public deleteTokenForUserId(userId: string): Query<any, any> {
-    return this.tokenModel.remove({
-      user_id: userId,
-    });
+  public async deleteTokenForUserId(userId: string): Promise<any> {
+    // try {
+    //   const deleteToken = await this.tokenRepository.delete(userId);
+    //   return true
+    // } catch (e) {
+    //   return false
+    // }
+    return await this.tokenRepository.delete(userId)
   }
 
   public async decodeToken(token: string) {
-    const tokenModel = await this.tokenModel.find({
-      token,
-    });
+    const tokenModel = await this.tokenRepository.find({ where: { token } })
     let result = null;
 
     if (tokenModel && tokenModel[0]) {

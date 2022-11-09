@@ -40,10 +40,6 @@ export class UsersController {
     @Inject('USER_SERVICE') private readonly userServiceClient: ClientProxy,
   ) {}
 
-  // @Get()
-  // public async getAll() {
-  //   console.log('get all')
-  // }
   @Get()
   @Authorization(true)
   @ApiOkResponse({
@@ -72,11 +68,13 @@ export class UsersController {
     type: CreateUserResponseDto,
   })
   public async createUser(
-    @Body() userRequest: CreateUserDto,
+    @Body() userRequest: CreateUserDto, // TODO
   ): Promise<CreateUserResponseDto> {
+    console.log('create User ', userRequest)
     const createUserResponse: IServiceUserCreateResponse = await firstValueFrom(
       this.userServiceClient.send('user_create', userRequest),
-    );
+      );
+    console.log('createUserResponse ', createUserResponse)
     if (createUserResponse.status !== HttpStatus.CREATED) {
       throw new HttpException(
         {

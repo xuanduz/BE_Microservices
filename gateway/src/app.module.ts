@@ -21,6 +21,14 @@ import { PermissionGuard } from './services/guards/permission.guard';
       inject: [ConfigService]
     },
     {
+      provide: 'USER_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        const userServiceOptions = configService.get('userService');
+        return ClientProxyFactory.create(userServiceOptions);
+      },
+      inject: [ConfigService]
+    },
+    {
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
