@@ -15,19 +15,17 @@ export class TokenController {
     if (data && data.userId) {
       try {
         const createResult = await this.tokenService.createToken(data.userId);
-        console.log('createResult', createResult);
+
         result = {
           status: HttpStatus.CREATED,
           message: 'token_create_success',
           token: createResult.token,
-          refresh_token: createResult.refresh_token
         };
       } catch (e) {
         result = {
           status: HttpStatus.BAD_REQUEST,
           message: 'token_create_bad_request',
           token: null,
-          refresh_token: null
         };
       }
     } else {
@@ -35,7 +33,6 @@ export class TokenController {
         status: HttpStatus.BAD_REQUEST,
         message: 'token_create_bad_request',
         token: null,
-        refresh_token: null
       };
     }
 
@@ -61,6 +58,7 @@ export class TokenController {
   public async decodeToken(data: {
     token: string;
   }): Promise<ITokenDataResponse> {
+    console.log('decodeToken ', data);
     const tokenData = await this.tokenService.decodeToken(data.token);
     return {
       status: tokenData ? HttpStatus.OK : HttpStatus.UNAUTHORIZED,

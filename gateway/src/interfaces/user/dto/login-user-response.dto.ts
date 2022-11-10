@@ -1,3 +1,4 @@
+import { IUser } from './../../../../../user/src/interfaces/user.interface';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginUserResponseDto {
@@ -9,7 +10,6 @@ export class LoginUserResponseDto {
   })
   data: {
     token: string;
-    refresh_token: string
   };
   @ApiProperty({ example: null, nullable: true })
   errors: { [key: string]: any };

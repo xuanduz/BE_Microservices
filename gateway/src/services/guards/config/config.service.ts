@@ -37,7 +37,7 @@ export class ConfigService {
     this.envConfig.postService = {
       options: {
         port: process.env.POST_SERVICE_PORT,
-        host: process.env.POST_SERVICE_HOST,
+        // host: process.env.POST_SERVICE_HOST,
       },
       transport: Transport.TCP,
     };

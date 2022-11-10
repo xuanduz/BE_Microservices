@@ -20,22 +20,15 @@ export class TokenService {
       const token = this.jwtService.sign(
         { userId },
         {
-          expiresIn: 60,
           secret: process.env.SECRET,
         },
       );
-  
-      const refresh_token = this.jwtService.sign(
-        { userId },
-        {
-          expiresIn: 24 * 60 * 60,
-          secret: process.env.REFRESH_TOKEN,
-        },
-      );
+
       const newTokenUser = {
-        user_id: userId,
-        refresh_token
+        user_id: +userId,
+        token
       }
+
       this.tokenRepository.save(newTokenUser)
       return { ...newTokenUser, token}
       // return this.tokenRepository.create(newTokenUser)
@@ -55,23 +48,53 @@ export class TokenService {
   }
 
   public async decodeToken(token: string) {
-    const tokenModel = await this.jwtService.decode(token)
-    // const tokenModel = await this.tokenRepository.find({ where: { token } })
+    const tokenModel = await this.tokenRepository.findOneBy({
+      token: token.split(' ')[1]
+    })
     let result = null;
-    console.log('>>> decode Token ', tokenModel);
-    if (tokenModel && tokenModel[0]) {
+
+    if (tokenModel) {
       try {
-        const tokenData = this.jwtService.decode(tokenModel[0].token) as {
+        const tokenData = this.jwtService.decode(tokenModel.token) as {
           exp: number;
           userId: any;
         };
-        if (!tokenData || tokenData.exp <= Math.floor(+new Date() / 1000)) {
-          result = null;
-        } else {
+        console.log('tokenData', tokenData);
+        if (tokenData) {
           result = {
             userId: tokenData.userId,
           };
         }
+        // if (!tokenData || tokenData.exp <= Math.floor(+new Date() / 1000)) {
+        //   result = null;
+        // } else {
+        // }
+      } catch (e) {
+        result = null;
+      }
+    }
+    return result;
+  }
+
+  public async checkTokenForRole(token: string) {
+    const tokenModel = await this.tokenRepository.findOneBy({
+      token: token.split(' ')[1]
+    })
+    let result = null;
+
+    if (tokenModel) {
+      try {
+        const tokenData = this.jwtService.decode(tokenModel.token) as any;
+        console.log('tokenData', tokenData);
+        if (tokenData) {
+          result = {
+            userId: tokenData.userId,
+          };
+        }
+        // if (!tokenData || tokenData.exp <= Math.floor(+new Date() / 1000)) {
+        //   result = null;
+        // } else {
+        // }
       } catch (e) {
         result = null;
       }

@@ -3,8 +3,8 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('token')
 export class TokenEntity {
   @PrimaryGeneratedColumn()
-  user_id: string | number
+  user_id: number
 
   @Column()
-  refresh_token: string;
+  token: string;
 }

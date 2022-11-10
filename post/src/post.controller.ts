@@ -1,17 +1,19 @@
 import { Controller, Get } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
+import { PostDto } from './dto/post.dto';
 import { PostService } from './services/post.service';
 
 @Controller('post')
 export class PostController {
-  // constructor(private readonly postService: PostService) {}
+  constructor(private readonly postService: PostService) {}
 
-  @MessagePattern('get_post_by_id')
-  public async getPostById(id: string): Promise<any> {
-    console.log('getPostById controller ', id)
+  @MessagePattern('create_post')
+  public async createPost(createPost: PostDto): Promise<any> {
+    return this.postService.createNewPost(createPost)
   }
-  // @Get()
-  // getHello(): string {
-  //   return this.appService.getHello();
-  // }
+
+  @MessagePattern('get_5_post')
+  public async getPost(): Promise<any> {
+    return this.postService.getAllPost()
+  }
 }
