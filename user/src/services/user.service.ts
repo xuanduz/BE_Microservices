@@ -29,14 +29,19 @@ export class UserService {
   //   return this.userModel.updateOne({ _id: id }, userParams).exec();
   // }
 
-  public async createUser(user: IUser): Promise<any> {
-    // try {
-    //   const password = encodePassword(user.password)
-    //   await this.userRepository.save({...user, password})
-    //   return await this.userRepository.create(user)
-    // } catch (e) {
-    //   return {} as CreateUserDto
-    // }
+  public async createUser(user: IUser): Promise<UserEntity> {
+    try {
+      const newUser: CreateUserDto = {
+        ...user,
+        password: encodePassword(user.password),
+        username: user.email,
+        registration_date: new Date(),
+        role: 'USER',
+      }
+      return await this.userRepository.save(newUser)
+    } catch (e) {
+      return {} as UserEntity
+    }
   }
 
   public async updateUser(user: IUser): Promise<any> {

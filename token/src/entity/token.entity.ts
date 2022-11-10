@@ -6,5 +6,5 @@ export class TokenEntity {
   user_id: string | number
 
   @Column()
-  token: string;
+  refresh_token: string;
 }

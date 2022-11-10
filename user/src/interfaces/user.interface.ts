@@ -3,13 +3,11 @@ export interface IUser {
   email: string;
   password: string;
   username: string;
-  registration_date: Date;
   role: string;
-  status: number;
-  notification_id: string;
-  name?: string;
-  compareEncryptedPassword: (password: string) => boolean;
-  getEncryptedPassword: (password: string) => string;
+  name: string;
+  status?: number;
+  notification_id?: number;
+  registration_date?: Date;
 }
 
 // user_id INT NOT NULL AUTO_INCREMENT,

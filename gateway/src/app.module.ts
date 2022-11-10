@@ -1,15 +1,16 @@
-import { UsersController } from './users.controller';
+import { UsersController } from './controllers/users.controller';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ClientProxyFactory } from '@nestjs/microservices';
 
-import { ConfigService } from './services/config/config.service';
+import { ConfigService } from './services/guards/config/config.service';
 import { AuthGuard } from './services/guards/authorization.guard';
 import { PermissionGuard } from './services/guards/permission.guard';
+import { PostController } from './controllers/post.controller';
 
 @Module({
   imports: [],
-  controllers: [UsersController],
+  controllers: [UsersController, PostController],
   providers: [
     ConfigService, 
     {
@@ -25,6 +26,14 @@ import { PermissionGuard } from './services/guards/permission.guard';
       useFactory: (configService: ConfigService) => {
         const userServiceOptions = configService.get('userService');
         return ClientProxyFactory.create(userServiceOptions);
+      },
+      inject: [ConfigService]
+    },
+    {
+      provide: 'POST_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        const postServiceOptions = configService.get('postService');
+        return ClientProxyFactory.create(postServiceOptions);
       },
       inject: [ConfigService]
     },

@@ -9,6 +9,7 @@ export class LoginUserResponseDto {
   })
   data: {
     token: string;
+    refresh_token: string
   };
   @ApiProperty({ example: null, nullable: true })
   errors: { [key: string]: any };

@@ -58,7 +58,7 @@ export class UserController {
 
   @MessagePattern('user_get_by_id')
   public async getUserById(id: string): Promise<UserSearchResponseEntity> {
-    let result: UserSearchResponseEntity;
+    let result: any;
 
     if (id) {
       const user = await this.userService.searchUserById(id);
@@ -108,8 +108,8 @@ export class UserController {
           },
         };
       } else {
-        const createdUser = await this.userService.createUser(userParams);
-          console.log('createdUser ', createdUser)
+        try {
+          const createdUser = await this.userService.createUser(userParams);
           delete createdUser.password;
           result = {
             status: HttpStatus.CREATED,
@@ -117,24 +117,14 @@ export class UserController {
             user: createdUser,
             errors: null,
           };
-        // try {
-        //   const createdUser = await this.userService.createUser(userParams);
-        //   console.log('createdUser ', createdUser)
-        //   delete createdUser.password;
-        //   result = {
-        //     status: HttpStatus.CREATED,
-        //     message: 'user_create_success',
-        //     user: createdUser,
-        //     errors: null,
-        //   };
-        // } catch (e) {
-        //   result = {
-        //     status: HttpStatus.PRECONDITION_FAILED,
-        //     message: 'user_create_precondition_failed',
-        //     user: null,
-        //     errors: e.errors,
-        //   };
-        // }
+        } catch (e) {
+          result = {
+            status: HttpStatus.PRECONDITION_FAILED,
+            message: 'user_create_precondition_failed',
+            user: null,
+            errors: e.errors,
+          };
+        }
       }
     } else {
       result = {

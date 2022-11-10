@@ -18,14 +18,14 @@ export class UserEntity {
   password: string;
 
   @Column()
-  registration_date: string;
-
-  @Column()
   role: string;
 
-  @Column()
-  status: number;
+  @Column({nullable: true})
+  registration_date?: Date;
 
-  @Column()
-  notification_id: string;
+  @Column({nullable: true})
+  status?: number;
+
+  @Column({nullable: true})
+  notification_id?: number;
 }

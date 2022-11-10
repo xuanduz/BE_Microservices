@@ -1,44 +1,44 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger"
 
-export class CreateUserDto {
-  @ApiProperty()
-  user_id: string
-  @ApiProperty()
+export class UserDto {
+  user_id: number
   email: string
-  @ApiProperty()
   password: string
-  @ApiProperty()
   username: string
-  @ApiPropertyOptional()
-  registration_date: string
-  @ApiProperty()
   role: string
-  @ApiProperty()
-  status: number
-  @ApiPropertyOptional()
-  notification_id: string
-  @ApiPropertyOptional()
   name: string
+  registration_date?: Date
+  status?: number
+  notification_id?: number
+}
+
+export class CreateUserDto {
+  email: string
+  password: string
+  username: string
+  role: string
+  name: string
+  registration_date?: Date
+  status?: number
+  notification_id?: number
 }
 
 
 export class SearchUserDto {
   @ApiProperty()
-  user_id: string
-  @ApiProperty()
   email: string
   @ApiProperty()
   password: string
   @ApiProperty()
   username: string
   @ApiPropertyOptional()
-  registration_date: string
+  registration_date?: Date
   @ApiProperty()
   role: string
   @ApiProperty()
-  status: number
+  status?: number
   @ApiPropertyOptional()
-  notification_id: string
+  notification_id?: number
   @ApiPropertyOptional()
   name: string
 }

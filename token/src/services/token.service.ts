@@ -16,36 +16,49 @@ export class TokenService {
   ) {}
 
   public async createToken(userId: string): Promise<IToken> {
-    const token = this.jwtService.sign(
-      {
-        userId,
-      },
-      {
-        expiresIn: 30 * 24 * 60 * 60,
-      },
-    );
-    const newTokenUser = {
-      user_id: userId,
-      token
+    try {
+      const token = this.jwtService.sign(
+        { userId },
+        {
+          expiresIn: 60,
+          secret: process.env.SECRET,
+        },
+      );
+  
+      const refresh_token = this.jwtService.sign(
+        { userId },
+        {
+          expiresIn: 24 * 60 * 60,
+          secret: process.env.REFRESH_TOKEN,
+        },
+      );
+      const newTokenUser = {
+        user_id: userId,
+        refresh_token
+      }
+      this.tokenRepository.save(newTokenUser)
+      return { ...newTokenUser, token}
+      // return this.tokenRepository.create(newTokenUser)
+    } catch (e) {
+      return {} as IToken
     }
-    this.tokenRepository.save(newTokenUser)
-    return this.tokenRepository.create(newTokenUser)
   }
 
   public async deleteTokenForUserId(userId: string): Promise<any> {
-    // try {
-    //   const deleteToken = await this.tokenRepository.delete(userId);
-    //   return true
-    // } catch (e) {
-    //   return false
-    // }
-    return await this.tokenRepository.delete(userId)
+    try {
+      await this.tokenRepository.delete(userId);
+      return true
+    } catch (e) {
+      return false
+    }
+    // return await this.tokenRepository.delete(userId)
   }
 
   public async decodeToken(token: string) {
-    const tokenModel = await this.tokenRepository.find({ where: { token } })
+    const tokenModel = await this.jwtService.decode(token)
+    // const tokenModel = await this.tokenRepository.find({ where: { token } })
     let result = null;
-
+    console.log('>>> decode Token ', tokenModel);
     if (tokenModel && tokenModel[0]) {
       try {
         const tokenData = this.jwtService.decode(tokenModel[0].token) as {
